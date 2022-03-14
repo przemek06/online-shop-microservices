@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="login">
+    <p><b>Username</b></p>
+    <p><input type="text" placeholder="Username" id="username"></p>
+    <p><b>Password</b></p>
+    <p><input type="password" placeholder="Password" id="password"></p>
+    <p><input type="submit" id="submit" value="Login" class="button"></p>
+    <p>Or create a <a href="register.html">new account</a></p>
+</form>
+
+<p><button id="click" onclick=get()>CLICK</button></p>
+</body>
+<script>
+    let url = "http://localhost:8080"
+
+    function init(){
+        const form = document.querySelector("#login");
+        form.addEventListener("submit", submit);
+    }
+
+    function get(){
+        fetch(url + "/api/products", {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            credentials: 'include', // include, *same-origin, omit
+            origin: "http://localhost:63342"
+        }).then(result => console.log(result))
+    }
+
+    async function submit(e){
+        e.preventDefault();
+        const username = document.querySelector("#username").value;
+        const password = document.querySelector("#password").value;
+
+        const data = {
+            username: username,
+            password: password
+        }
+
+        console.log(data)
+
+        login(data).then(response => {
+            if (response.status === 200) console.log("YES");;
+            if( response.status!== 200) {
+                console.log("NOOOO");
+            }
+        })
+    }
+
+    async function login(data){
+        try {
+            return await fetch(url + "/api/auth/login", {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'include', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data),// body data type must match "Content-Type" header
+                origin: "http://localhost:63342"
+            });
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
+    init()
+</script>
+</html>
