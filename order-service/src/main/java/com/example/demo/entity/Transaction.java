@@ -18,6 +18,7 @@ public class Transaction {
     @Column(name = "transaction_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+    String address;
     String owner;
     String ownerEmail;
 }

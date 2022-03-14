@@ -7,6 +7,7 @@ import com.example.demo.service.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ValidationException;
 import java.util.List;
 
 @RestController
@@ -26,5 +27,10 @@ public class TransactionController {
     @PostMapping("/api/order")
     public ResponseEntity<TransactionResponse> finalizeTransaction(@RequestBody TransactionDto transactionDto){
         return transactionService.finalizeTransaction(transactionDto);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<TransactionResponse> handleBadTransactionFormat(ValidationException e){
+        return ResponseEntity.badRequest().build();
     }
 }

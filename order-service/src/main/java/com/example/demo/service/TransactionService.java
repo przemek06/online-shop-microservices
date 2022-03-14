@@ -9,6 +9,7 @@ import com.example.demo.entity.Transaction;
 import com.example.demo.model.AppUserDetails;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.TransactionRepository;
+import com.example.demo.stream.NotificationSender;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,16 @@ public class TransactionService {
     TransactionRepository transactionRepository;
     OrderRepository orderRepository;
     InventoryClient inventoryClient;
+    NotificationSender notificationSender;
 
     public TransactionService(TransactionRepository transactionRepository,
                               OrderRepository orderRepository,
-                              InventoryClient inventoryClient) {
+                              InventoryClient inventoryClient,
+                              NotificationSender notificationSender) {
         this.transactionRepository = transactionRepository;
         this.orderRepository = orderRepository;
         this.inventoryClient = inventoryClient;
+        this.notificationSender = notificationSender;
     }
 
     public List<OrderDto> findAllOrdersInTransaction(Long transactionId){
@@ -43,6 +47,9 @@ public class TransactionService {
         if(!saved) return ResponseEntity.badRequest().body(buildBadRequestResponse());
         Transaction transaction = transactionRepository.save(dtoToEntity(transactionDto));
         saveOrders(transaction, orders);
+        transactionDto.setId(transaction.getId());
+        notificationSender.sendNotification(transactionDto);
+
         return ResponseEntity.ok().body(buildOKResponse(transaction.getId()));
     }
 
@@ -84,6 +91,7 @@ public class TransactionService {
         return Transaction.builder()
                 .owner(extractUsername())
                 .ownerEmail(extractEmail(dto))
+                .address(dto.getAddress())
                 .build();
     }
 

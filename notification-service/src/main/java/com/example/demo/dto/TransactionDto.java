@@ -3,21 +3,20 @@ package com.example.demo.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@ToString
 public class TransactionDto {
     Long id;
-    String ownerEmail;
-    @NotNull
-    @Size(max = 64)
     String address;
+    String ownerEmail;
     @NotEmpty
     @NotNull
     List<OrderDto> orders;
