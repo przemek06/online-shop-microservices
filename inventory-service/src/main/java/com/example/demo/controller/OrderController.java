@@ -21,10 +21,13 @@ public class OrderController {
     @PostMapping("/api/inventory/orders")
     public ResponseEntity<OrderResponseDto> makeOrder(@RequestBody ProductOrderDto order) {
         try {
+            System.out.println("VERI GOOD");
             return ResponseEntity.ok(orderService.makeOrder(order));
         } catch (RuntimeException e) {
+            System.out.println("LESS ERROR " + e.getMessage());
             return ResponseEntity.ok(OrderService.buildNotAvailableResponse());
         } catch (Exception e) {
+            System.out.println("ERROR " + e.getMessage());
             return ResponseEntity.status(500).build();
         }
     }

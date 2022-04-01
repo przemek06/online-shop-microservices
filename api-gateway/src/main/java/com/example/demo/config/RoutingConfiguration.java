@@ -29,7 +29,7 @@ public class RoutingConfiguration {
                         .uri("lb://PRODUCT-SERVICE"))
                 .route(r -> r.path("/api/auth/**")
                         .uri("lb://AUTH-SERVER"))
-                .route(r -> r.path("/api/order/**")
+                .route(r -> r.path("/api/orders/**")
                         .filters(f->f.filter(filter))
                         .uri("lb://ORDER-SERVICE"))
                 .build();

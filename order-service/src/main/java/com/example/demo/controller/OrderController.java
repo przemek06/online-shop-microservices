@@ -59,12 +59,16 @@ public class OrderController {
     @PostMapping("/api/orders")
     public ResponseEntity<OrderResponseDto> makeOrder(@RequestBody @Valid ProductOrderDto productOrderDto){
         try{
+            System.out.println("VERI GOOD TOO");
             return ResponseEntity.ok(orderService.makeOrder(productOrderDto));
         } catch (ValidationException e){
+            System.out.println("LESS ERROR " + e.getMessage());
             return ResponseEntity.badRequest().build();
         } catch (FeignException.NotFound|FeignException.ServiceUnavailable e){
+            System.out.println("LESS ERROR " + e.getMessage());
             return ResponseEntity.status(503).build();
         } catch (Exception e){
+            System.out.println("BIG ERROR " + e.getMessage());
             return ResponseEntity.status(500).build();
         }
     }

@@ -1,0 +1,124 @@
+version: "3.8"
+
+networks:  
+  shop-network:  
+    name: shop-network  
+    driver: bridge
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    networks:
+      - shop-network
+    expose:
+      - "5672"
+      - "15672"
+    
+
+  eureka-server:
+    build:
+      context: eureka-server
+      dockerfile: Dockerfile
+    networks:
+      - shop-network
+    expose:
+      - "8761"
+
+
+  user-service:
+    build:
+      context: user-service
+      dockerfile: Dockerfile
+    networks:
+      - shop-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_URI=http://eureka-server:8761/eureka
+
+
+  authorization-server:
+    build:
+      context: authorization-server
+      dockerfile: Dockerfile
+    networks:
+      - shop-network
+    depends_on:
+      - "eureka-server"
+      - "user-service"
+    environment:
+      - EUREKA_URI=http://eureka-server:8761/eureka
+
+  inventory-service:
+    build:
+      context: inventory-service
+      dockerfile: Dockerfile
+    networks:
+      - shop-network
+    depends_on:
+      - "eureka-server"
+      - "authorization-server"
+    environment:
+      - EUREKA_URI=http://eureka-server:8761/eureka
+
+  order-service:
+    build:
+      context: order-service
+      dockerfile: Dockerfile
+    networks:
+      - shop-network
+    depends_on:
+      - "eureka-server"
+      - "inventory-service"
+    environment:
+      - EUREKA_URI=http://eureka-server:8761/eureka
+      - RABBITMQ_HOST=rabbitmq      
+
+  product-service:
+    build:
+      context: product-service
+      dockerfile: Dockerfile
+    networks:
+      - shop-network
+    depends_on:
+      - "eureka-server"
+      - "inventory-service"
+    environment:
+      - EUREKA_URI=http://eureka-server:8761/eureka
+
+  notification-service:
+    build:
+      context: notification-service
+      dockerfile: Dockerfile
+    networks:
+      - shop-network   
+    depends_on:
+      - "rabbitmq"
+      - "order-service"
+    environment:
+      - EUREKA_URI=http://eureka-server:8761/eureka
+      - RABBITMQ_HOST=rabbitmq
+      - MANAGER_EMAIL=firstemail
+      - APPLICATION_EMAIL=secondemail
+      - APPLICATION_EMAIL_PASSWORD=password
+      - STATIC_FILES_PATH=classpath:/..
+
+  api-gateway:
+    build:
+      context: api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    networks:
+      - shop-network
+    depends_on:
+      - "eureka-server"
+      - "product-service"
+      - "order-service"
+      - "authorization-server"
+      - "notification-service"
+    environment:
+      - EUREKA_URI=http://eureka-server:8761/eureka
