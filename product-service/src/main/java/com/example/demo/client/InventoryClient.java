@@ -2,7 +2,6 @@ package com.example.demo.client;
 
 import com.example.demo.dto.ProductDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,17 +25,11 @@ public interface InventoryClient {
     @RequestMapping(method = RequestMethod.POST,
         value = "/api/inventory/",
         consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    Boolean saveProduct(@RequestBody ProductDto productDto);
-
-    @RequestMapping(method = RequestMethod.PUT,
-            value = "/api/inventory/",
-            consumes = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    Boolean updateProduct(@RequestBody ProductDto productDto);
-
+    void saveProduct(@RequestBody ProductDto productDto);
 
     @RequestMapping(method = RequestMethod.DELETE,
             value = "/api/inventory/{code}")
-    Boolean deleteProduct(@PathVariable String code);
+    void deleteProduct(@PathVariable String code);
 
 
 }

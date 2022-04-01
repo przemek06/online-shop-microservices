@@ -12,18 +12,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "orders")
-public class Order {
+@Table(name = "tickets")
+public class ProductTicket {
     @Id
-    @Column(name = "order_id")
+    @Column(name = "ticket_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    @ManyToOne(targetEntity = Transaction.class,
+    @ManyToOne(targetEntity = ProductOrder.class,
             fetch = FetchType.LAZY,
             optional = false,
             cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "transaction_ref", referencedColumnName = "transaction_id")
-    Transaction transactionRef;
+    @JoinColumn(name = "order_ref", referencedColumnName = "product_order_id")
+    ProductOrder orderRef;
     String productCode;
-    String productAmount;
+    Integer productAmount;
 }

@@ -12,10 +12,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "transactions")
-public class Transaction {
+@Table(name = "product_orders")
+public class ProductOrder {
     @Id
-    @Column(name = "transaction_id")
+    @Column(name = "product_order_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String address;

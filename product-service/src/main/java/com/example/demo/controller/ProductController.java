@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ProductDto;
 import com.example.demo.service.ProductService;
+import feign.FeignException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,32 +20,53 @@ public class ProductController {
     }
 
     @GetMapping("/api/products")
-    public List<ProductDto> getAllProducts(){
-        return productService.getAllProducts();
+    public ResponseEntity<List<ProductDto>> getAllProducts(){
+        try {
+            return ResponseEntity.ok(productService.getAllProducts());
+        } catch (FeignException.NotFound|FeignException.ServiceUnavailable e){
+            return ResponseEntity.status(503).build();
+        } catch (Exception e){
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @GetMapping("/api/products/{code}")
     public ResponseEntity<ProductDto> getProductByCode(@PathVariable String code){
-        return productService.getProduct(code);
+        try {
+            return ResponseEntity.ok(productService.getProduct(code));
+        } catch (FeignException.NotFound|FeignException.ServiceUnavailable e){
+            return ResponseEntity.status(503).build();
+        } catch (Exception e){
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @PostMapping("/api/products")
-    public ResponseEntity<String> saveProduct(@RequestBody @Valid ProductDto productDto){
-        return productService.saveProduct(productDto);
-    }
-
-    @PutMapping("/api/products")
-    public ResponseEntity<String> updateProduct(@RequestBody @Valid ProductDto productDto){
-        return productService.updateProduct(productDto);
+    public ResponseEntity<Void> saveProduct(@RequestBody @Valid ProductDto productDto){
+        try {
+            productService.saveProduct(productDto);
+            return ResponseEntity.ok().build();
+        } catch (FeignException.NotFound|FeignException.ServiceUnavailable e){
+            return ResponseEntity.status(503).build();
+        } catch (Exception e){
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @DeleteMapping("/api/products/{code}")
-    public ResponseEntity<String> deleteProductByCode(@PathVariable String code){
-        return productService.deleteProduct(code);
+    public ResponseEntity<Void> deleteProductByCode(@PathVariable String code){
+        try {
+            productService.deleteProduct(code);
+            return ResponseEntity.ok().build();
+        } catch (FeignException.NotFound|FeignException.ServiceUnavailable e){
+            return ResponseEntity.status(503).build();
+        } catch (Exception e){
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<String> handleBadProductDto(ValidationException exception){
-        return ResponseEntity.badRequest().body("Product JSON in wrong format");
+    public ResponseEntity<Void> handleBadProductDto(){
+        return ResponseEntity.badRequest().build();
     }
 }

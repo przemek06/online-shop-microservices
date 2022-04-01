@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class TransactionDto {
+public class ProductOrderDto {
     Long id;
     @Email
     String ownerEmail;
@@ -22,5 +22,6 @@ public class TransactionDto {
     String address;
     @NotEmpty
     @NotNull
-    List<OrderDto> orders;
+    List<ProductTicketDto> tickets;
+    String owner;
 }

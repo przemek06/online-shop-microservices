@@ -1,7 +1,7 @@
 package com.example.demo.stream;
 
 
-import com.example.demo.dto.TransactionDto;
+import com.example.demo.dto.ProductOrderDto;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
@@ -15,7 +15,7 @@ public class NotificationSender {
         this.streamBridge = streamBridge;
     }
 
-    public void sendNotification(TransactionDto transactionDto){
-        streamBridge.send("notifications-topic", transactionDto, MimeTypeUtils.APPLICATION_JSON);
+    public void sendNotification(ProductOrderDto productOrderDto){
+        streamBridge.send("notifications-topic", productOrderDto, MimeTypeUtils.APPLICATION_JSON);
     }
 }
