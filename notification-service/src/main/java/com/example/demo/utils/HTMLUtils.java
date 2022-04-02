@@ -1,17 +1,22 @@
 package com.example.demo.utils;
 
-import org.springframework.util.ResourceUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.nio.file.Files;
 
+@Component
 public class HTMLUtils {
 
-    public static String getResourceFileAsString(String fileName) throws IOException {
-        File file = ResourceUtils.getFile("classpath:" + fileName);
+    @Autowired
+    private ResourceLoader resourceLoader;
 
-        String content = new String(Files.readAllBytes(((File) file).toPath()));
-        return  content;
+    public String getResourceFileAsString(String fileName) throws IOException {
+        Resource file = resourceLoader.getResource("classpath:" + fileName);
+
+        return new String(file.getInputStream().readAllBytes());
     }
 
 }

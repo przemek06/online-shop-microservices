@@ -99,8 +99,8 @@ services:
     environment:
       - EUREKA_URI=http://eureka-server:8761/eureka
       - RABBITMQ_HOST=rabbitmq
-      - MANAGER_EMAIL=firstemail
-      - APPLICATION_EMAIL=secondemail
+      - MANAGER_EMAIL=email1
+      - APPLICATION_EMAIL=email2
       - APPLICATION_EMAIL_PASSWORD=password
       - STATIC_FILES_PATH=classpath:/..
 
